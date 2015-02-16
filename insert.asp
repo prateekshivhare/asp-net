@@ -1,35 +1,58 @@
-<html>
-<body>
+<%@ Language="VBScript"%>
+<%
+Dim Connection
+Dim ConnString
+Dim Recordset
+Dim SQL
+ConnString="DRIVER={SQL Server};SERVER=jeweldb2012\retail;UID=sa;" & _
+"PWD=diaspark@1234;DATABASE=Employees_development"
+Set Connection = Server.CreateObject("ADODB.Connection")
+Connection.Open ConnString
 
-<form method="post" action="demo_add.asp">
-<table>
-<tr>
-<td>CustomerID:</td>
-<td><input name="custid"></td>
-</tr><tr>
-<td>Company Name:</td>
-<td><input name="compname"></td>
-</tr><tr>
-<td>Contact Name:</td>
-<td><input name="contname"></td>
-</tr><tr>
-<td>Address:</td>
-<td><input name="address"></td>
-</tr><tr>
-<td>City:</td>
-<td><input name="city"></td>
-</tr><tr>
-<td>Postal Code:</td>
-<td><input name="postcode"></td>
-</tr><tr>
-<td>Country:</td>
-<td><input name="country"></td>
-</tr>
-</table>
-<br><br>
-<input type="submit" value="Add New">
-<input type="reset" value="Cancel">
-</form>
 
-</body>
-</html> 
+    sql="INSERT INTO  datanew (name,lastname,fathername,mothername) "
+sql=sql & " VALUES "
+sql=sql & "('" & Request.Form("fname") & "',"
+sql=sql & "'" & Request.Form("lname") & "',"
+sql=sql & "'" & Request.Form("fathrname") & "',"
+sql=sql & "'" & Request.Form("mothrname") & "')"
+
+Connection.Execute SQL
+
+
+
+
+Connection.Close
+
+%>
+<%
+
+ConnString="DRIVER={SQL Server};SERVER=jeweldb2012\retail;UID=sa;" & _
+"PWD=diaspark@1234;DATABASE=Employees_development"
+SQL = "SELECT * FROM datanew"
+Set Connection = Server.CreateObject("ADODB.Connection")
+Set Recordset = Server.CreateObject("ADODB.Recordset")
+Connection.Open ConnString
+Recordset.Open SQL,Connection
+If Recordset.EOF Then
+Response.Write("No records returned.")
+Else
+Do While NOT Recordset.Eof
+   
+ Response.write Recordset("name")
+  Response.write "&nbsp;"              
+Response.write Recordset("lastname")
+Response.write "&nbsp;"   
+Response.write Recordset("fathername")
+Response.write "&nbsp;"   
+Response.write Recordset("mothername")
+Response.write "<br>"
+Response.write "<br>"
+Recordset.MoveNext
+Loop
+End If
+Recordset.Close
+Set Recordset=nothing
+Connection.Close
+Set Connection=nothing
+%>
